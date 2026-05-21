@@ -1,7 +1,7 @@
 ---
 name: academic-paper-review
-description: 对已完成论文初稿进行结构化同行评审、完整性检查和声明审计。5角色多视角审阅、参考文献验证和可选的引用声明审计。
-version: 1.0.0
+description: 对已完成论文初稿进行结构化同行评审、完整性检查和声明审计。6种操作模式、5角色多视角审阅、参考文献验证和可选的引用声明审计。
+version: 1.1.0
 author: Hermes Agent (adapted from Imbad0202/academic-research-skills)
 license: MIT
 domain: research
@@ -20,9 +20,15 @@ metadata:
 
 ## Overview
 
-Complete post-draft quality assurance pipeline adapted from the [Academic Research Skills](https://github.com/Imbad0202/academic-research-skills) project (v3.8.2). Covers structured multi-perspective peer review (5 reviewer personas), reference/citation integrity verification, and optional claim-faithfulness audit.
+Complete post-draft quality assurance pipeline adapted from the [Academic Research Skills](https://github.com/Imbad0202/academic-research-skills) project (v3.9.4.2). Covers structured multi-perspective peer review (5 reviewer personas), 6 operational modes, reference/citation integrity verification, and optional claim-faithfulness audit.
 
 **Core philosophy:** AI is the reviewer's assistant, not the author. The goal is to catch errors a human reviewer would spot — fabricated references, logical gaps, methodological flaws — not to rewrite the paper.
+
+**v1.1 improvements:**
+1. **6 operational modes**: `full` (comprehensive), `re-review` (verification), `quick` (rapid assessment), `methodology-focus`, `guided` (Socratic), `calibration` (FNR/FPR measurement)
+2. **Devil's Advocate** now uses a dedicated counter-argument report format
+3. **Phase 2.5 Revision Coaching** — Socratic dialogue after editorial synthesis
+4. **Phase Boundary discipline** — IRON RULE: reviewers must NOT modify the manuscript
 
 ## When to Use
 
@@ -44,7 +50,63 @@ Complete post-draft quality assurance pipeline adapted from the [Academic Resear
 - Proofreading grammar/spelling only → use general text review
 - Full research-to-paper pipeline → out of scope
 
-## Workflow Overview (4 Phases)
+## Quick Mode Selection Guide
+
+| Your Situation | Recommended Mode |
+|----------------|------------------|
+| First submission, need comprehensive review | `full` |
+| Checking if revisions addressed comments | `re-review` |
+| Quick quality assessment (~15 min) | `quick` |
+| Focus only on methods/statistics | `methodology-focus` |
+| Want to learn by doing (guided) | `guided` |
+| Want to measure reviewer accuracy before trusting scores | `calibration` |
+
+---
+
+## Agent Team (7 Agents)
+
+| # | Agent | Role | Phase |
+|---|-------|------|-------|
+| 1 | `field_analyst` | Analyzes paper field, dynamically configures 5 reviewer identities | Phase 0 |
+| 2 | `eic` | Editor-in-Chief — journal fit, originality, overall quality | Phase 1 |
+| 3 | `methodology_reviewer` | Peer Reviewer 1 — research design, statistical validity, reproducibility | Phase 1 |
+| 4 | `domain_reviewer` | Peer Reviewer 2 — literature coverage, theoretical framework | Phase 1 |
+| 5 | `perspective_reviewer` | Peer Reviewer 3 — cross-disciplinary connections, practical impact | Phase 1 |
+| 6 | `devils_advocate` | Devil's Advocate — core argument challenges, logical fallacy detection | Phase 1 |
+| 7 | `editorial_synthesizer` | Synthesizes all reviews, identifies consensus, makes editorial decision | Phase 2 |
+
+---
+
+## Operational Modes (6 Modes)
+
+| Mode | Trigger Phrases | Agents | Output |
+|------|----------------|--------|--------|
+| `full` | Default / "full review" | All 7 agents | 5 review reports + Editorial Decision + Revision Roadmap |
+| `re-review` | "verification review" / "check revisions" / "re-review" | field_analyst + eic + editorial_synthesizer | Revision response checklist + residual issues + new Decision |
+| `quick` | "quick review" / "quick look" | field_analyst + eic | EIC quick assessment + key issues list (15-minute version) |
+| `methodology-focus` | "check methodology" / "methodology issues" | field_analyst + eic + methodology_reviewer | In-depth methodology review report |
+| `guided` | "guide me" / "walk me through issues" | All 7 + Socratic dialogue | Progressive revelation + user-formulated revision strategy |
+| `calibration` | "calibrate reviewer" / "measure accuracy" | All 7 agents, 5× per gold paper | Calibration Report: FNR/FPR/balanced accuracy + per-dimension calibration error |
+
+### Mode Selection Logic
+
+```
+"Review this paper"                      -> full
+"Give me a quick look at this paper"     -> quick
+"Help me check the methodology"          -> methodology-focus
+"Does this paper have methodology issues"-> methodology-focus
+"Guide me to improve this paper"         -> guided
+"Walk me through the issues in my paper" -> guided
+"Verification review" / "Check revisions"-> re-review
+"How accurate is your review scoring?"   -> calibration
+"Calibrate against these 10 papers"      -> calibration
+```
+
+---
+
+## Workflow Overview
+
+The core pipeline runs across 4 phases. Modes slice this pipeline at different depths:
 
 ```
 Phase 0: Setup → Read paper, identify field/methodology, configure 5 reviewer personas
@@ -52,6 +114,8 @@ Phase 0: Setup → Read paper, identify field/methodology, configure 5 reviewer 
 Phase 1: Multi-Perspective Review → 5 structured reviews (sequential recommended)
     ↓
 Phase 2: Editorial Synthesis → Weighted score, decision letter, revision roadmap
+    ↓
+Phase 2.5: Revision Coaching (optional) → Socratic guidance for revision planning
     ↓
 Phase 3: Integrity Gate → Reference verification (30% sample, min 10) + 7-mode checklist
     ↓
@@ -122,9 +186,9 @@ Use sub-agent delegation with 3 parallel streams:
 
 Pass the full paper text and reviewer instructions. Collect all 3 results, then proceed to Phase 2.
 
-### Review Report Template (per reviewer)
+### Review Report Template (EIC, Methodology, Domain, Perspective)
 
-Each report uses this structure:
+The four standard reviewers use this structure:
 
 ```
 ## [Reviewer Name] — Review Report
@@ -160,6 +224,41 @@ Overall impression.
 | **Overall** | **Average** | |
 ```
 
+### Devil's Advocate Report Structure (Special Format)
+
+The Devil's Advocate uses a dedicated format focused on counter-argument and logical scrutiny:
+
+```
+## Devil's Advocate — Challenge Report
+
+**Score:** [0-100]
+**Verdict:** [Accept / Minor Revision / Major Revision / Reject]
+
+### 1. Strongest Counter-Argument (200-300 words)
+If we assume the opposite conclusion, what would the evidence look like? Present the strongest logical case against the paper's central claim.
+
+### 2. Issue List
+
+| Issue | Category | Severity | Location | Explanation |
+|-------|----------|----------|----------|-------------|
+| ... | Fallacy/Cherry-picking/Bias/Overgeneralization | CRITICAL/MAJOR/MINOR | §X.X | ... |
+
+### 3. Ignored Alternative Explanations / Paths
+- What other interpretations of the data are possible?
+- What alternative methodological choices could have been made?
+- ...
+
+### 4. Missing Stakeholder Perspectives
+- Who is affected but not considered?
+- What perspectives are absent?
+
+### 5. "So What?" Test
+Even if all claims are true — does this matter? Is the contribution meaningful?
+
+### 6. Concession Threshold Assessment
+Score each rebuttal 1–5. Concede only at ≥4.
+```
+
 ### Reviewer-Specific Guidance
 
 #### Editor-in-Chief (EIC)
@@ -178,6 +277,10 @@ Focus on: cross-disciplinary relevance, practical implications, ethical consider
 Focus on challenging core assumptions, identifying logical fallacies (straw man, false dichotomy, hasty generalization, circular reasoning, post-hoc ergo propter hoc), checking for confirmation bias, testing alternative explanations, proposing the strongest counter-argument to the central claim. Ask: "If we assume the opposite conclusion, what would the evidence look like?" and "So what — even if true, does this matter?"
 
 > **Key principle:** Every critique must be grounded in specific paper content. Generic criticism ("lack of novelty") without location or evidence is not acceptable.
+
+### IRON RULE — READ-ONLY CONSTRAINT
+
+**Reviewers MUST NOT modify the submitted manuscript.** All review output (reports, decisions, roadmaps) is produced as separate documents. The reviewer examines the paper — it never rewrites it. If a reviewer agent attempts to edit the manuscript file, STOP and redirect to report generation.
 
 ---
 
@@ -202,6 +305,8 @@ Weighted average:
 | 50-64 | Major Revision |
 | < 50 | Reject |
 
+**IRON RULE:** If the Devil's Advocate finds CRITICAL issues, the Editorial Decision cannot be Accept.
+
 ### Editorial Decision Package Structure
 
 ```
@@ -224,6 +329,7 @@ Weighted average:
 
 ### Critical Issues (must address)
 - Issues flagged as Critical by any reviewer, with editorial judgment
+- **Devil's Advocate CRITICAL issues are specially flagged**
 
 ### Revision Roadmap (for Revise decisions)
 
@@ -244,6 +350,34 @@ Weighted average:
 | Devil's Advocate | | |
 | **Weighted Total** | | |
 ```
+
+**IRON RULES:**
+1. 5 reviewers review independently, without cross-referencing each other.
+2. Synthesizer cannot fabricate review comments; must be based on specific reports from Phase 1.
+3. If the Devil's Advocate finds CRITICAL issues, the Editorial Decision cannot be Accept.
+
+---
+
+## Phase 2.5: Revision Coaching (optional)
+
+Only triggers when Decision = Minor Revision or Major Revision. The user can skip by saying "just fix it".
+
+### Socratic Revision Guidance
+
+The EIC guides the user through a structured dialogue:
+
+1. **Overall positioning** — "After reading the review comments, what surprised you the most?"
+2. **Core issue focus** — Guide user to understand consensus issues
+3. **Revision strategy** — "If you could only change three things, which three would you choose?"
+4. **Counter-argument response** — Guide user to think about how to respond to Devil's Advocate challenges
+5. **Implementation planning** — Help prioritize revisions
+
+### Output
+
+After dialogue ends (or user says "just fix it"), produce:
+
+- User's self-formulated revision strategy
+- Reprioritized Revision Roadmap reflecting the user's decisions
 
 ---
 
@@ -359,6 +493,95 @@ Identify the paper's 3-5 central claims from Abstract and Conclusion that cite a
 
 ---
 
+## Re-Review Mode (Verification Review)
+
+Dedicated mode triggered by "re-review" / "verification review" / "check revisions".
+
+### Input
+- Original Revision Roadmap (from previous full review)
+- Revised manuscript
+- Response to Reviewers letter (optional)
+
+### Output
+- Verification Review Report with:
+  - R&R Traceability Matrix (Schema): Original Issue → Author's Claim → Verified?
+  - New issues discovered in revision
+  - Updated Decision (Accept / Minor Revision / Major Revision)
+
+### R&R Traceability Matrix
+
+```
+| # | Original Issue | Author's Claim | Current Status | Residual Issues |
+|---|----------------|----------------|----------------|-----------------|
+| P1 | ... | ... | RESOLVED / PARTIAL / UNRESOLVED | ... |
+| P2 | ... | ... | RESOLVED / PARTIAL / UNRESOLVED | ... |
+```
+
+### Participants
+- field_analyst (re-configures)
+- eic (leads re-review)
+- editorial_synthesizer (produces final re-review decision)
+
+---
+
+## Guided Mode (Socratic Guided Review)
+
+Helps authors understand problems themselves through progressive revelation.
+
+### Dialogue Flow
+
+The EIC opens with strengths, then gradually introduces deeper issues from each reviewer perspective:
+
+1. **Opening** — "Your paper has notable strengths in [area]. Let's start there."
+2. **Surface issues** — Introduce minor concerns first
+3. **Deep issues** — Progress to Devil's Advocate challenges
+4. **Counter-argument reflection** — "How would you respond if a reviewer said [Devil's Advocate strongest counter-argument]?"
+5. **Self-formulation** — Guide user to articulate their own revision plan
+
+### Rules
+- Never tell the user what to fix — guide them to discover it
+- Let the user talk more than the reviewer
+- After dialogue ends, produce a Revision Roadmap reflecting the user's own decisions
+
+---
+
+## Calibration Mode (v1.1)
+
+Opt-in mode that measures this reviewer's FNR / FPR / balanced accuracy against a user-supplied gold set.
+
+### Input
+- User provides 5-20 papers with known outcomes (e.g., papers the user has already reviewed or received reviews for)
+
+### Process
+1. Run `full` mode 5× per gold paper with fresh context
+2. Cross-model comparison default-on
+3. Compare automated scores against user-supplied ground truth
+
+### Output: Calibration Report
+
+```
+## Calibration Report
+
+| Metric | Value | Notes |
+|--------|-------|-------|
+| FNR (False Negative Rate) | XX% | Missed issues / total known issues |
+| FPR (False Positive Rate) | XX% | False flags / total checks |
+| Balanced Accuracy | XX% | (TPR + SPC) / 2 |
+| AUC | 0.XX | Discrimination threshold |
+| Per-Dimension Calibration Error | See below | |
+
+### Per-Dimension Breakdown
+| Dimension | Calibration Error | Over/Under-confident |
+|-----------|-------------------|----------------------|
+| Methodology | ±X% | Confident |
+| Domain | ±X% | Over-confident |
+| ... | | |
+```
+
+After calibration, all subsequent reviews in the session include a confidence disclosure referencing this report.
+
+---
+
 ## Common Pitfalls
 
 1. **Skipping Phase 0 user confirmation.** Always present the reviewer configuration and get explicit confirmation before Phase 1. The user may want to adjust reviewer foci.
@@ -377,6 +600,10 @@ Identify the paper's 3-5 central claims from Abstract and Conclusion that cite a
 
 8. **Forgetting to save the final report.** After completing all phases, offer to save the combined report to a file. The report is ephemeral in the chat otherwise.
 
+9. **IRON RULE violation — reviewers modifying the manuscript.** Phase 1 reviewers are READ-ONLY. If a reviewer agent attempts to edit the manuscript, STOP and redirect to report generation.
+
+10. **Calibration without diverse gold set.** A calibration gold set should include both strong and weak papers across your domain; a uniformly good set will inflate FNR and deflate FPR.
+
 ---
 
 ## Verification Checklist
@@ -384,7 +611,10 @@ Identify the paper's 3-5 central claims from Abstract and Conclusion that cite a
 - [ ] Phase 0: Paper fully read and understood; field/methodology/venue identified
 - [ ] Phase 0: Reviewer configuration presented to user and confirmed
 - [ ] Phase 1: All 5 reviews produced with specific, grounded feedback (not generic)
+- [ ] Phase 1: Devil's Advocate uses dedicated challenge report format
+- [ ] Phase 1: READ-ONLY constraint observed
 - [ ] Phase 2: Weighted score calculated correctly, editorial decision with clear rationale
+- [ ] Phase 2.5 (if triggered): Revision Coaching dialogue completed or skipped
 - [ ] Phase 3: At least 10 references verified via web search; 7-mode checklist completed
 - [ ] Phase 4 (if triggered): Claims compared against actual source content
 - [ ] Final report delivered to user in structured format

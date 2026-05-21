@@ -15,10 +15,12 @@
 
 ### 核心功能一览
 
-| # | 阶段 | 功能 |
+| # | 功能 | 说明 |
 |---|------|------|
-| ✅ | **Phase 1** | **多视角同行评审** — 5 个审稿人角色并行/串行审阅 |
+| ✅ | **6 种操作模式** | `full` 完整审阅 / `re-review` 验证修改 / `quick` 快速评估 / `methodology-focus` 方法论聚焦 / `guided` 苏格拉底引导 / `calibration` 校准测量 |
+| ✅ | **Phase 1** | **多视角同行评审** — 5 个审稿人角色（含独立的魔鬼代言人挑战报告格式） |
 | ✅ | **Phase 2** | **编辑决策合成** — 加权打分、决策信函、修改路线图 |
+| ✅ | **Phase 2.5** | **修订辅导** — 苏格拉底式对话引导用户自主制定修改策略 |
 | ✅ | **Phase 3** | **参考文献完整性验证** — 联网抽查 + 7 项完整性检查清单 |
 | ✅ | **Phase 4** | **声明可信度审计**（可选）— 拿原始文献比对论文的核心声明 |
 
@@ -149,7 +151,7 @@ cp SKILL.md ~/.hermes/skills/research/academic-paper-review/
 
 MIT License — 详见 [LICENSE](LICENSE)。
 
-本项目改编自 [Imbad0202/academic-research-skills](https://github.com/Imbad0202/academic-research-skills) (v3.8.2)，遵循 MIT 许可证。主要修改包括：
+本项目改编自 [Imbad0202/academic-research-skills](https://github.com/Imbad0202/academic-research-skills) (v3.9.4.2)，遵循 MIT 许可证。主要修改包括：
 
 - 重构为 Hermes Agent skill 格式，增加 YAML 前置元数据
 - 增加中英双语触发词和配置说明

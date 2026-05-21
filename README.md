@@ -11,10 +11,11 @@
 
 ## Overview | 概述
 
-This project provides a complete **post-draft quality assurance pipeline** for academic papers. It adapts the methodology from the [Academic Research Skills](https://github.com/Imbad0202/academic-research-skills) project (v3.8.2) into a structured workflow that covers:
+This project provides a complete **post-draft quality assurance pipeline** for academic papers. It adapts the methodology from the [Academic Research Skills](https://github.com/Imbad0202/academic-research-skills) project (v3.9.4.2) into a structured workflow that covers:
 
-- ✅ **Multi-Perspective Peer Review** — 5 reviewer personas (Editor-in-Chief, Methodology, Domain, Perspective, Devil's Advocate)
-- ✅ **Editorial Synthesis** — Weighted scoring, decision letter, and revision roadmap
+- ✅ **6 Operational Modes** — `full`, `re-review` (verification), `quick`, `methodology-focus`, `guided` (Socratic), `calibration` (FNR/FPR)
+- ✅ **Multi-Perspective Peer Review** — 5 reviewer personas (Editor-in-Chief, Methodology, Domain, Perspective, Devil's Advocate with dedicated challenge format)
+- ✅ **Editorial Synthesis** — Weighted scoring, decision letter, revision roadmap, Revision Coaching (Phase 2.5)
 - ✅ **Reference Integrity Verification** — Web-based sampling verification + 7-mode checklist
 - ✅ **Claim Faithfulness Audit** — (Optional) Cross-check central claims against actual sources
 
@@ -138,7 +139,7 @@ Each review produces a structured report with:
 
 MIT License — see [LICENSE](LICENSE).
 
-This project is adapted from [Imbad0202/academic-research-skills](https://github.com/Imbad0202/academic-research-skills) (v3.8.2) under MIT License. Significant modifications include:
+This project is adapted from [Imbad0202/academic-research-skills](https://github.com/Imbad0202/academic-research-skills) (v3.9.4.2) under MIT License. Significant modifications include:
 
 - Restructured as a Hermes Agent skill with YAML frontmatter
 - Added bilingual (Chinese/English) trigger phrases and configuration
