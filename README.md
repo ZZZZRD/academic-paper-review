@@ -5,6 +5,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+**English** · [简体中文](README.zh-CN.md)
+
+---
+
 ## Overview | 概述
 
 This project provides a complete **post-draft quality assurance pipeline** for academic papers. It adapts the methodology from the [Academic Research Skills](https://github.com/Imbad0202/academic-research-skills) project (v3.8.2) into a structured workflow that covers:
